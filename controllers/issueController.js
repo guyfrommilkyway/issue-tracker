@@ -17,22 +17,16 @@ class IssueController {
 		const { issue_title, issue_text, created_by, assigned_to, status_text } =
 			req.body;
 
-		const title = issue_title?.toString()?.trim();
-		const text = issue_text?.toString()?.trim();
-		const by = created_by?.toString()?.trim();
-		const to = assigned_to?.toString()?.trim();
-		const status = status_text?.toString()?.trim();
-
-		if (!title || !text || !by)
-			response(res, 400, { error: 'require field(s) missing' });
-
 		const payload = {
-			issue_title: title,
-			issue_text: text,
-			created_by: by,
-			assigned_to: to,
-			status_text: status,
+			issue_title: issue_title?.toString()?.trim(),
+			issue_text: issue_text?.toString()?.trim(),
+			created_by: created_by?.toString()?.trim(),
+			assigned_to: assigned_to?.toString()?.trim(),
+			status_text: status_text?.toString()?.trim(),
 		};
+
+		if (!payload.title || !payload.text || !payload.by)
+			response(res, 400, { error: 'require field(s) missing' });
 
 		const { name, issues } =
 			(await projectServices.read(project)) ??
