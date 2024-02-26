@@ -26,6 +26,7 @@ const IssueSchema = new Schema({
 	open: {
 		type: Boolean,
 		required: true,
+		default: true,
 	},
 });
 
