@@ -13,8 +13,8 @@ const IssueSchema = new Schema({
 		type: String,
 		required: true,
 	},
-	assigned_to: String,
-	status_text: String,
+	assigned_to: { type: String, default: '' },
+	status_text: { type: String, default: '' },
 	created_on: {
 		type: Date,
 		required: true,
