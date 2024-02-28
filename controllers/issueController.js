@@ -29,7 +29,7 @@ class IssueController {
 			status_text: status_text?.toString()?.trim(),
 		};
 
-		if (!payload.title || !payload.text || !payload.by) {
+		if (!payload.issue_title || !payload.issue_text || !payload.created_by) {
 			res.status(400).json(MISSING_FIELDS);
 			return;
 		}
