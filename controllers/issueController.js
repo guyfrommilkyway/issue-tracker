@@ -6,7 +6,7 @@ const issueServices = new IssueServices();
 const projectServices = new ProjectServices();
 
 const MISSING_ID = { error: 'missing _id' };
-const MISSING_FIELDS = { error: 'require field(s) missing' };
+const MISSING_FIELDS = { error: 'required field(s) missing' };
 const RECORD_NOT_FOUND = { error: 'record not found' };
 
 class IssueController {
