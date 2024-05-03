@@ -6,4 +6,4 @@ const ERROR_CONTROLLER = {
 
 Object.freeze(ERROR_CONTROLLER);
 
-export default ERROR_CONTROLLER;
+module.exports = ERROR_CONTROLLER;
