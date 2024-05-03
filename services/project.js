@@ -1,9 +1,12 @@
 const Project = require('../models/project');
 
 class ProjectServices {
-	async read(name) {
+	async read(name, query) {
 		const filter = { name };
-		const project = await Project.findOne(filter).populate('issues');
+		const project = await Project.findOne(filter).populate({
+			path: 'issues',
+			match: query,
+		});
 
 		return project;
 	}
