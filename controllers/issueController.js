@@ -2,7 +2,7 @@
 const IssueServices = require('../services/issue');
 const ProjectServices = require('../services/project');
 
-import ERROR_CONTROLLER from '../constants/controller';
+const ERROR_CONTROLLER = require('../constants/controller');
 
 const issueServices = new IssueServices();
 const projectServices = new ProjectServices();
