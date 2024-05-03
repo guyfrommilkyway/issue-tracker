@@ -12,7 +12,7 @@ class IssueController {
 		const { project } = req?.params;
 
 		if (!project) {
-			res.status(404).send(ERROR_CONTROLLER.MISSING_ID);
+			res.send(ERROR_CONTROLLER.MISSING_ID);
 			return;
 		}
 
@@ -20,8 +20,8 @@ class IssueController {
 			req.body;
 
 		if (!issue_title || !issue_text || !created_by) {
-			console.log();
-			res.status(400).send(ERROR_CONTROLLER.MISSING_FIELDS);
+			console.log(ERROR_CONTROLLER.MISSING_FIELDS);
+			res.send(ERROR_CONTROLLER.MISSING_FIELDS);
 			return;
 		}
 
@@ -46,14 +46,14 @@ class IssueController {
 		const { project } = req?.params;
 
 		if (!project) {
-			res.status(404).send(ERROR_CONTROLLER.MISSING_ID);
+			res.send(ERROR_CONTROLLER.MISSING_ID);
 			return;
 		}
 
 		const resProject = await projectServices.read(project);
 
 		if (!resProject) {
-			res.status(404).send(ERROR_CONTROLLER.NOT_FOUND);
+			res.send(ERROR_CONTROLLER.NOT_FOUND);
 			return;
 		}
 
