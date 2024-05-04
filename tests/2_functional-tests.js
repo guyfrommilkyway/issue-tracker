@@ -8,6 +8,9 @@ chai.use(chaiHttp);
 const ISSUE_CONTROLLER = require('../constants/controller');
 
 suite('Functional Tests', function () {
+	const project = 'test-project';
+	let issueId;
+
 	test('Create an issue with every field', function (done) {
 		const payload = {
 			issue_title: 'Title',
@@ -20,10 +23,13 @@ suite('Functional Tests', function () {
 		chai
 			.request(server)
 			.keepOpen()
-			.post('/api/issues/test-project')
-			.send()
+			.post(`/api/issues/${project}`)
+			.send(payload)
 			.end(function (err, res) {
 				assert.equal(res.status, 200);
+				assert.isTrue(!!res.body._id, true);
+
+				issueId = res.body._id;
 				done();
 			});
 	});
@@ -37,10 +43,11 @@ suite('Functional Tests', function () {
 		chai
 			.request(server)
 			.keepOpen()
-			.post('/api/issues/test-project')
+			.post(`/api/issues/${project}`)
 			.send(payload)
 			.end(function (err, res) {
 				assert.equal(res.status, 200);
+				assert.isTrue(!!res.body._id, true);
 				done();
 			});
 	});
@@ -53,10 +60,11 @@ suite('Functional Tests', function () {
 		chai
 			.request(server)
 			.keepOpen()
-			.post('/api/issues/test-project')
+			.post(`/api/issues/${project}`)
 			.send(payload)
 			.end(function (err, res) {
-				assert.equal(JSON.stringify(res.body), JSON.stringify(ISSUE_CONTROLLER.ERROR_MISSING_FIELDS));
+				assert.isTrue(!!res.body.error);
+				assert.equal(JSON.stringify(res.body.error), JSON.stringify(ISSUE_CONTROLLER.ERROR_MISSING_FIELDS.error));
 				done();
 			});
 	});
@@ -64,9 +72,10 @@ suite('Functional Tests', function () {
 		chai
 			.request(server)
 			.keepOpen()
-			.get('/api/issues/test-project')
+			.get(`/api/issues/${project}`)
 			.end(function (err, res) {
 				assert.equal(res.status, 200);
+				assert.isArray(res.body);
 				done();
 			});
 	});
@@ -77,6 +86,7 @@ suite('Functional Tests', function () {
 			.get('/api/issues/test-project?open=true')
 			.end(function (err, res) {
 				assert.equal(res.status, 200);
+				assert.isArray(res.body);
 				done();
 			});
 	});
@@ -84,32 +94,34 @@ suite('Functional Tests', function () {
 		chai
 			.request(server)
 			.keepOpen()
-			.put('/api/issues/test-project?open=true&assigned_to=Chai and Mocha')
+			.get('/api/issues/test-project?open=true&issue_title=Chai and Mocha')
 			.end(function (err, res) {
 				assert.equal(res.status, 200);
+				assert.isArray(res.body);
 				done();
 			});
 	});
 	test('Update one field on an issue', function (done) {
 		const payload = {
-			_id: '663643b0608861d73f63c345',
+			_id: issueId,
 			issue_title: 'Updated title',
 		};
 
 		chai
 			.request(server)
 			.keepOpen()
-			.put('/api/issues/test-project')
+			.put(`/api/issues/${project}`)
 			.send(payload)
 			.end(function (err, res) {
 				assert.equal(res.status, 200);
-				assert.equal(JSON.stringify(res.body), JSON.stringify({ ...ISSUE_CONTROLLER.SUCCESS_UPDATE, _id: payload._id }));
+				assert.isTrue(!!res.body.result);
+				assert.equal(JSON.stringify(res.body.result), JSON.stringify(ISSUE_CONTROLLER.SUCCESS_UPDATE.result));
 				done();
 			});
 	});
 	test('Update multiple fields on an issue', function (done) {
 		const payload = {
-			_id: '663643b0608861d73f63c345',
+			_id: issueId,
 			issue_title: 'Updated title',
 			issue_text: 'Updated text',
 			assigned_to: 'Updated assignee',
@@ -118,11 +130,12 @@ suite('Functional Tests', function () {
 		chai
 			.request(server)
 			.keepOpen()
-			.put('/api/issues/test-project')
+			.put(`/api/issues/${project}`)
 			.send(payload)
 			.end(function (err, res) {
 				assert.equal(res.status, 200);
-				assert.equal(JSON.stringify(res.body), JSON.stringify({ ...ISSUE_CONTROLLER.SUCCESS_UPDATE, _id: payload._id }));
+				assert.isTrue(!!res.body.result);
+				assert.equal(JSON.stringify(res.body.result), JSON.stringify(ISSUE_CONTROLLER.SUCCESS_UPDATE.result));
 				done();
 			});
 	});
@@ -136,25 +149,27 @@ suite('Functional Tests', function () {
 		chai
 			.request(server)
 			.keepOpen()
-			.put('/api/issues/test-project')
+			.put(`/api/issues/${project}`)
 			.send(payload)
 			.end(function (err, res) {
-				assert.equal(JSON.stringify(res.body), JSON.stringify(ISSUE_CONTROLLER.ERROR_MISSING_ID));
+				assert.isTrue(!!res.body.error);
+				assert.equal(JSON.stringify(res.body.error), JSON.stringify(ISSUE_CONTROLLER.ERROR_MISSING_ID.error));
 				done();
 			});
 	});
 	test('Update an issue with no fields to update', function (done) {
 		const payload = {
-			_id: '663643b0608861d73f63c345',
+			_id: issueId,
 		};
 
 		chai
 			.request(server)
 			.keepOpen()
-			.put('/api/issues/test-project')
+			.put(`/api/issues/${project}`)
 			.send(payload)
 			.end(function (err, res) {
-				assert.equal(JSON.stringify(res.body), JSON.stringify({ ...ISSUE_CONTROLLER.ERROR_NO_FIELDS, _id: payload._id }));
+				assert.isTrue(!!res.body.error);
+				assert.equal(JSON.stringify(res.body.error), JSON.stringify(ISSUE_CONTROLLER.ERROR_NO_FIELDS.error));
 				done();
 			});
 	});
@@ -169,40 +184,44 @@ suite('Functional Tests', function () {
 		chai
 			.request(server)
 			.keepOpen()
-			.put('/api/issues/test-project')
+			.put(`/api/issues/${project}`)
 			.send(payload)
 			.end(function (err, res) {
-				assert.equal(JSON.stringify(res.body), JSON.stringify({ ...ISSUE_CONTROLLER.ERROR_UNABLE_UPDATE, _id: payload._id }));
+				assert.isTrue(!!res.body.error);
+				assert.equal(JSON.stringify(res.body.error), JSON.stringify(ISSUE_CONTROLLER.ERROR_UNABLE_UPDATE.error));
 				done();
 			});
 	});
 	test('Delete an issue', function (done) {
 		const payload = {
-			_id: '663647f7cea69ebe6083ebb8',
+			_id: issueId,
 		};
 
 		chai
 			.request(server)
 			.keepOpen()
-			.delete('/api/issues/test-project')
+			.delete(`/api/issues/${project}`)
 			.send(payload)
 			.end(function (err, res) {
 				assert.equal(res.status, 200);
+				assert.isTrue(!!res.body.result);
+				assert.equal(JSON.stringify(res.body.result), JSON.stringify(ISSUE_CONTROLLER.SUCCESS_DELETE.result));
 				done();
 			});
 	});
 	test('Delete an issue with an invalid _id', function (done) {
 		const payload = {
-			_id: '663647f7cea69ebe6083ebc7',
+			_id: '663647f7cea69ebe6083eac7',
 		};
 
 		chai
 			.request(server)
 			.keepOpen()
-			.delete('/api/issues/test-project')
+			.delete(`/api/issues/${project}`)
 			.send(payload)
 			.end(function (err, res) {
-				assert.equal(JSON.stringify(res.body), JSON.stringify({ ...ISSUE_CONTROLLER.ERROR_UNABLE_DELETE, _id: payload._id }));
+				assert.isTrue(!!res.body.error);
+				assert.equal(JSON.stringify(res.body.error), JSON.stringify(ISSUE_CONTROLLER.ERROR_UNABLE_DELETE.error));
 				done();
 			});
 	});
@@ -212,10 +231,11 @@ suite('Functional Tests', function () {
 		chai
 			.request(server)
 			.keepOpen()
-			.delete('/api/issues/test-project')
+			.delete(`/api/issues/${project}`)
 			.send(payload)
 			.end(function (err, res) {
-				assert.equal(JSON.stringify(res.body), JSON.stringify(ISSUE_CONTROLLER.ERROR_MISSING_ID));
+				assert.isTrue(!!res.body.error);
+				assert.equal(JSON.stringify(res.body.error), JSON.stringify(ISSUE_CONTROLLER.ERROR_MISSING_ID.error));
 				done();
 			});
 	});
