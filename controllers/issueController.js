@@ -80,11 +80,11 @@ class IssueController {
 		const updatedIssue = await issueServices.update(_id, fields);
 
 		if (!updatedIssue) {
-			res.send(ISSUE_CONTROLLER.ERROR_UNABLE_UPDATE);
+			res.send({ ...ISSUE_CONTROLLER.ERROR_UNABLE_UPDATE, _id });
 			return;
 		}
 
-		res.status(200).json({ ...ISSUE_CONTROLLER.SUCCESS_UPDATE, _id: _id });
+		res.status(200).json({ ...ISSUE_CONTROLLER.SUCCESS_UPDATE, _id });
 	}
 	async delete(req, res) {
 		const { project } = req?.params;
@@ -104,13 +104,13 @@ class IssueController {
 		const deletedIssue = await issueServices.delete(_id);
 
 		if (!deletedIssue) {
-			res.send(ISSUE_CONTROLLER.ERROR_UNABLE_DELETE);
+			res.send({ ...ISSUE_CONTROLLER.ERROR_UNABLE_DELETE, _id });
 			return;
 		}
 
 		await projectServices.updateDelete(project, _id);
 
-		res.status(200).json({ ...ISSUE_CONTROLLER.SUCCESS_DELETE, _id: _id });
+		res.status(200).json({ ...ISSUE_CONTROLLER.SUCCESS_DELETE, _id });
 	}
 }
 
