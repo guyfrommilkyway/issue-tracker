@@ -68,13 +68,13 @@ class IssueController {
 		const fields = { ...req?.body };
 		delete fields._id;
 
+		for (const key in fields) {
+			if (fields[key] === '') delete fields[key];
+		}
+
 		if (fields.length === 0) {
 			res.send({ ...ISSUE_CONTROLLER.ERROR_NO_FIELDS, _id });
 			return;
-		}
-
-		for (const key in fields) {
-			if (fields[key] === '') delete fields[key];
 		}
 
 		const updatedIssue = await issueServices.update(_id, fields);
