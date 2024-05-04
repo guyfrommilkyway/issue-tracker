@@ -72,7 +72,7 @@ class IssueController {
 			if (fields[key] === '') delete fields[key];
 		}
 
-		if (fields.length === 0) {
+		if (Object.keys(fields).length === 0) {
 			res.send({ ...ISSUE_CONTROLLER.ERROR_NO_FIELDS, _id });
 			return;
 		}
