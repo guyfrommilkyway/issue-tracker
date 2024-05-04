@@ -2,8 +2,7 @@ const Project = require('../models/project');
 
 class ProjectServices {
 	async read(name, query) {
-		const filter = { name };
-		const project = await Project.findOne(filter).populate({
+		const project = await Project.findOne({ name }).populate({
 			path: 'issues',
 			match: query,
 		});
@@ -11,17 +10,26 @@ class ProjectServices {
 		return project;
 	}
 	async create(name) {
-		const filter = { name };
-		const project = new Project(filter);
+		const project = new Project({ name });
 		await project.save();
 
 		return project;
 	}
-	async update(name, issues) {
-		const filter = { name };
-		const payload = { issues };
-
-		await Project.findOneAndUpdate(filter, payload);
+	async update(name, issue) {
+		await Project.findOneAndUpdate(
+			{ name },
+			{
+				$push: { issues: issue },
+			}
+		);
+	}
+	async updateDelete(name, issue) {
+		await Project.findOneAndUpdate(
+			{ name },
+			{
+				$pull: { issues: issue },
+			}
+		);
 	}
 }
 
