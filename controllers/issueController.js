@@ -69,7 +69,7 @@ class IssueController {
 		delete fields._id;
 
 		if (fields.length === 0) {
-			res.send(ISSUE_CONTROLLER.ERROR_NO_FIELDS);
+			res.send({ ...ISSUE_CONTROLLER.ERROR_NO_FIELDS, _id });
 			return;
 		}
 

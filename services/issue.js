@@ -13,7 +13,8 @@ class IssueServices {
 		return issue;
 	}
 	async update(_id, data) {
-		const updatedIssue = await Issue.findByIdAndUpdate(_id, data, { new: true });
+		const payload = { ...data, updated_on: new Date() };
+		const updatedIssue = await Issue.findByIdAndUpdate(_id, payload, { new: true });
 
 		return updatedIssue;
 	}
